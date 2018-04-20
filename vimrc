@@ -3,10 +3,10 @@ filetype off                  " 必须
 
 " 设置包括vundle和初始化相关的runtime path
 set rtp+=~/.vim/bundle/Vundle.vim
+"======================================================================
+"=插件
+"======================================================================
 call vundle#begin()
-" 另一种选择, 指定一个vundle安装插件的路径
-"call vundle#begin('~/some/path/here')
-
 " 让vundle管理插件版本,必须
 Plugin 'VundleVim/Vundle.vim'
 " 语法自动补全插件
@@ -21,13 +21,13 @@ Plugin 'scrooloose/nerdtree'
 " Plugin 'altercation/solarized'
 Plugin 'morhetz/gruvbox'
 " 语法排错
-Plugin 'vim-syntastic/syntastic'
+"Plugin 'vim-syntastic/syntastic'
 "PEP8
 Plugin 'PyCQA/pycodestyle'
 " 注释
 Plugin 'tpope/vim-commentary'
 " GDB
-Plugin 'vim-scripts/Conque-GDB'
+" Plugin 'vim-scripts/Conque-GDB'
 " 在普通模式下运行常用的EX命令
 Plugin 'tpope/vim-unimpaired'
 " 智能路径管理
@@ -47,7 +47,7 @@ Plugin 'Valloric/MatchTagAlways'
 " HTML 语法高亮
 " Plugin 'ZSaberLv0/ZFVimTxtHighlight'
 " 异步检错
-" Plugin 'neomake/neomake'
+Plugin 'neomake/neomake'
 "lint neomake
 " Plugin 'dojoteef/neomake-autolint'
 " 自动缩进
@@ -64,11 +64,9 @@ Plugin 'bitc/vim-bad-whitespace'
 "Plugin 'vim-scripts/gtags.vim'
 " 缩进助手
 "Plugin 'kana/vim-textobj-entire'
-" 以下范例用来支持不同格式的插件安装.
-" 请将安装插件的命令放在vundle#begin和vundle#end之间.
-" Github上的插件
-" 格式为 Plugin '用户名/插件仓库名'
 Plugin 'tpope/vim-fugitive'
+"ale异步查错
+" Plugin 'w0rp/ale'
 " 来自 http://vim-scripts.org/vim/scripts.html 的插件
 " Plugin '插件名称' 实际上是 Plugin 'vim-scripts/插件仓库名' 只是此处的用户名可以省略
 "Plugin 'L9'
@@ -82,7 +80,6 @@ Plugin 'tpope/vim-fugitive'
 " 安装L9，如果已经安装过这个插件，可利用以下格式避免命名冲突
 "Plugin 'ascenator/L9', {'name': 'newL9'}
 
-" 你的所有插件需要在下面这行之前
 call vundle#end()            " 必须
 filetype plugin indent on    " 必须 加载vim自带和插件相应的语法和文件类型相关脚本
 " 忽视插件改变缩进,可以使用以下替代:
@@ -96,8 +93,12 @@ filetype plugin indent on    " 必须 加载vim自带和插件相应的语法和
 "
 " 查阅 :h vundle 获取更多细节和wiki以及FAQ
 " 将你自己对非插件片段放在这行之后
-"
-" 自动补全配置
+"==============================================================================
+
+
+"==============================================================================
+" YCM自动补全配置
+"==============================================================================
 set completeopt=longest,menu
 "让Vim的补全菜单行为与一般IDE一致(参考VimTip1228)
 autocmd InsertLeave * if pumvisible() == 0|pclose|endif
@@ -121,12 +122,29 @@ let g:ycm_server_python_interpreter = '/usr/bin/python3.6'      " YCM 的python�
 " 修改高亮的背景色, 适应主题
 " highlight SyntasticErrorSign guifg=white guibg=black
 " to see error location list
+"==============================================================================
+
 
 " NERDTree 的快捷键映射
 nmap <F2> :NERDTreeToggle<cr>
-
+"==============================================================================
 " vim 自身的配置
+"==============================================================================
 let python_highlight_all=1
+
+" simple_fold 设置
+let g:SimpylFold_docstring_preview=1
+
+"python with virtualenv support
+py << EOF
+import os
+import sys
+if 'VIRTUAL_ENV' in os.environ:
+    project_base_dir = os.environ['VIRTUAL_ENV']
+    activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+    execfile(activate_this, dict(__file__=activate_this))
+EOF
+
 syntax on
 set hidden
 if has("autocmd")
@@ -163,28 +181,46 @@ setlocal foldlevel=99 " 设置折叠层数为
 " set foldclose=all " 设置为自动关闭折叠
 nnoremap <space> za
 " 用空格键来开关折叠"
+
 " f2 进入paste模式
 set pastetoggle=<f2>
+
 " 高亮显示当前行/列
 set cursorline
+
 " 让配置变更立即生效
 autocmd BufWritePost $VIMRC source $VIMRC
+
 " <F3> 运行python程序
 map <f3> :w<cr>:!python %<cr>
+
 "vim tab键默认4空格
 set ts=4
 set expandtab
 set autoindent
+
 "显示行号
 set nu
+
 " 保留的历史记录上限
 set history=200
+
 "支持UTF-8编码
 set encoding=utf-8
+
 " 屏蔽左下角的状态显示
 set noshowmode
+
 " vim 自动更改目录为当前文件所在目录
 set autochdir
+
+"自动括号及引号补全
+inoremap ( ()<ESC>i
+inoremap [ []<ESC>i
+inoremap { {}<ESC>i
+inoremap < <><ESC>i
+inoremap " ""<ESC>i
+inoremap ' ''<ESC>i
 "代码变得更漂亮
 set t_Co=256
 " colors zenburn
@@ -199,37 +235,38 @@ if exists('+colorcolumn')
 else
    au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
 endif
+"==============================================================================
+
+
+"==============================================================================
 " pylint 语法排错插件配置
+"==============================================================================
 " let pylint_version = substitute(pylint_version, '\v^\S+\s+', '', '')
 " syntastic 配置
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+" set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}
+" set statusline+=%*
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_aggregate_errors = 1
-let g:syntastic_python_checkers = ['python', 'pylint']
-let g:syntastic_python_pylint_args=""
-" let g:syntastic_debug = 1
-let g:syntastic_error_symbol='>>'
-let g:syntastic_warning_symbol='>'
-let g:syntastic_enable_highlighting=1
-let g:syntastic_loc_list_height = 5
+" let g:syntastic_always_populate_loc_list = 1
+" let g:syntastic_auto_loc_list = 1
+" let g:syntastic_check_on_open = 1
+" let g:syntastic_check_on_wq = 0
+" let g:syntastic_aggregate_errors = 1
+" let g:syntastic_python_checkers = ['python', 'pylint']
+" let g:syntastic_python_pylint_args=""
+" " let g:syntastic_debug = 1
+" let g:syntastic_error_symbol='>>'
+" let g:syntastic_warning_symbol='>'
+" let g:syntastic_enable_highlighting=1
+" let g:syntastic_loc_list_height = 5
 
 " pyenv的vim支持配置
 set wildignore+=versions/*,cache/*
 
-"自动括号及引号补全
-inoremap ( ()<ESC>i
-inoremap [ []<ESC>i
-inoremap { {}<ESC>i
-inoremap < <><ESC>i
-inoremap " ""<ESC>i
-inoremap ' ''<ESC>i
+
+"==============================================================================
 " GDB 设置
+"==============================================================================
 "Conque GDB
 ""待调试文件位于屏幕上方
 let g:ConqueGdb_SrcSplit = 'above'
@@ -243,8 +280,12 @@ let g:ConqueTerm_Color = 2
 let g:ConqueTerm_CloseOnEnd = 1
 "Conque Term配置错误时显示警告信息
 let g:ConqueTerm_StartMessages = 0
+"==============================================================================
 
+
+"==============================================================================
 " airline 配置
+"==============================================================================
 scriptencoding utf-8
 let g:airline_extensions = ['tabline']
 "airline主题
@@ -299,7 +340,9 @@ let g:airline_symbols.whitespace = 'Ξ'
 let g:airline_symbols.crypt = '🔒'
 
 
+"==============================================================================
 " emmet 配置
+"==============================================================================
 " remap the default <C-Y> leader
 let g:user_emmet_leader_key='<C-A>'
 " let g:user_emmet_mode='n'    "only enable normal mode functions.
@@ -309,10 +352,12 @@ let g:user_emmet_mode='a'    "enable all function in all mode.
 " Enable just for html/css
 " let g:user_emmet_install_global = 0
 " autocmd FileType html,css EmmetInstall
+"==============================================================================
 
 
-
+"==============================================================================
 " MatchTagAlways 配置
+"==============================================================================
 let g:mta_use_matchparen_group = 1
 let g:mta_filetypes = {
     \ 'html' : 1,
@@ -322,12 +367,16 @@ let g:mta_filetypes = {
     \}
 let g:mta_use_matchparen_group = 1
 let g:mta_set_default_matchtag_color = 1
+"==============================================================================
+
 
 " ZFVimTxtHighlight 配置
 " autocmd FileType html setl syntax=zftxt
 
 
+"==============================================================================
 " gruvbox 配置
+"==============================================================================
 if has('gui_running')
     set background=light   " Setting dark mode
 else
@@ -335,25 +384,54 @@ else
 endif
 let g:gruvbox_italic = 1
 let g:gruvbox_termcolors=256
+"==============================================================================
 
+
+"==============================================================================
 " neomake 异步查错
+"==============================================================================
 " When writing a buffer (no delay).
-" call neomake#configure#automake('w')
+call neomake#configure#automake('w')
 " " When writing a buffer (no delay), and on normal mode changes (after
 " 750ms).
-" call neomake#configure#automake('nw', 750)
+call neomake#configure#automake('nw', 750)
 " When reading a buffer (after 1s), and when writing (no delay).
-" call neomake#configure#automake('rw', 1000)
+call neomake#configure#automake('rw', 1000)
 " " Full config: when writing or reading a buffer, and on changes in insert
 " and
 " normal mode (after 1s; no delay when writing).
-" call neomake#configure#automake('nrwi', 500)
+call neomake#configure#automake('nrwi', 500)
 
+call neomake#configure#automake({
+\ 'TextChanged': {},
+\ 'InsertLeave': {},
+\ 'BufWritePost': {'delay': 0},
+\ 'BufWinEnter': {},
+\ }, 500)
+" function! MyOnBattery()
+"   return readfile('/sys/class/power_supply/AC/online') == ['0']
+" endfunction
+" if MyOnBattery()
+"   call neomake#configure#automake('w')
+" else
+"   call neomake#configure#automake('nrw', 1000)
+" endif
+let g:neomake_python_enabled_makers = ['pylint']
+augroup my_custom_maker
+    au!
+    au Filetype custom.py let b:neomake_python_enabled_makers = ['flake8']
+augroup END
+let g:neomake_error_sign = {'text': '✖', 'texthl': 'NeomakeErrorSign'}
+let g:neomake_warning_sign = {
+    \   'text': '⚠',
+    \   'texthl': 'NeomakeWarningSign',
+    \ }
+let g:neomake_message_sign = {
+    \   'text': '➤',
+    \   'texthl': 'NeomakeMessageSign',
+    \ }
+let g:neomake_info_sign = {'text': 'ℹ', 'texthl': 'NeomakeInfoSign'}
 " let g:neomake_autolint_enabled=1
-" let g:neomake_autolint_events = {
-"       \ 'InsertLeave': {'delay': 0},
-"       \ 'TextChanged': {},
-"      \ }
 " Correctly setup PYTHONPATH for pylint. Since Neomake-Autolint uses a
 " temporary file the default PYTHONPATH will be in the temporary directory
 " rather than the project root.
@@ -397,16 +475,42 @@ let g:gruvbox_termcolors=256
 "     \  'length': 5, 'filename': '/path/to/file'},
 "     \ ]
 " endfunction
+"==============================================================================
 
-"python with virtualenv support
-py << EOF
-import os
-import sys
-if 'VIRTUAL_ENV' in os.environ:
-    project_base_dir = os.environ['VIRTUAL_ENV']
-    activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-    execfile(activate_this, dict(__file__=activate_this))
-EOF
 
-" simple_fold 设置
-let g:SimpylFold_docstring_preview=1
+"==============================================================================
+"ALE config
+"==============================================================================
+
+" let g:ale_enabled = 1
+" let g:ale_sign_column_always = 1
+" let g:ale_completion_enabled = 0
+" let g:airline#extensions#ale#enabled = 1
+" let b:ale_lint_on_insert_leave = 1
+" let g:ale_set_ballons = 1
+" let g:ale_lint_delay = 200  " millisecs
+" let g:ale_lint_on_text_changed = 'always'  " never/insert/normal/always
+" let g:ale_lint_on_enter = 1
+" let g:ale_lint_on_filetype_changed = 1
+" let g:ale_lint_on_save = 1
+" let g:ale_fix_on_save = 1
+" let g:ale_set_loclist = 0
+" let g:ale_set_quickfix = 1
+" let g:ale_open_list = 1
+
+" let g:ale_linters = {
+" \   'javascript.jsx': ['eslint', 'flow'],
+" \   'python': ['pylint'],
+" \}
+" let g:ale_fixers = {
+" \   'javascript.jsx': ['eslint', 'prettier'],
+" \   'python': ['autopep8'],
+" \}
+
+" nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+" nmap <silent> <C-j> <Plug>(ale_next_wrap)
+" let g:ale_python_pylint_use_global = 1
+" let g:ale_list_window_size = 5
+" 自定义图标
+" let g:ale_sign_error = '✗'
+" let g:ale_sign_warning = '⚡'
