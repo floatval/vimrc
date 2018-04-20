@@ -4,7 +4,7 @@ filetype off                  " 必须
 " 设置包括vundle和初始化相关的runtime path
 set rtp+=~/.vim/bundle/Vundle.vim
 "======================================================================
-"=插件
+"插件
 "======================================================================
 call vundle#begin()
 " 让vundle管理插件版本,必须
@@ -96,41 +96,19 @@ filetype plugin indent on    " 必须 加载vim自带和插件相应的语法和
 "==============================================================================
 
 
-"==============================================================================
-" YCM自动补全配置
-"==============================================================================
-set completeopt=longest,menu
-"让Vim的补全菜单行为与一般IDE一致(参考VimTip1228)
-autocmd InsertLeave * if pumvisible() == 0|pclose|endif
-"离开插入模式后自动关闭预览窗口
-inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
-"映射按键,没有这个会导致其他插件的tab不能用
-let g:ycm_key_list_select_completion=['<c-n>', '<Down>']
-let g:ycm_key_list_previous_completion=['<c-p>', '<Up>']
-let g:ycm_confirm_extra_conf=0                      "关闭加载.ycm_extra_conf.py提示
-let g:ycm_collect_identifiers_from_tags_files = 1	" 开启 YCM基于标签引擎
-let g:ycm_min_num_of_chars_for_completion=2	        " 从第2个键入字符就开始罗列匹配项
-let g:ycm_use_ultisnips_completer = 1               " Default 1, just ensure
-let g:ycm_cache_omnifunc=0	                        " 禁止缓存匹配项,每次都重新生成匹配项
-let g:ycm_seed_identifiers_with_syntax=1	        " 语法关键字补全
-let g:ycm_complete_in_comments = 1                  " 在注释输入中也能补全
-let g:ycm_complete_in_strings = 1                   " 在字符串输入中也能补全
-" 注释和字符串中的文字也会被收入补全
-let g:ycm_collect_identifiers_from_comments_and_strings = 0  " 注释和字符串中的文字也会被收入补全
-let g:ycm_server_python_interpreter = '/usr/bin/python3.6'      " YCM 的python解释器位置
-" 补全python的关键字
-" 修改高亮的背景色, 适应主题
-" highlight SyntasticErrorSign guifg=white guibg=black
-" to see error location list
-"==============================================================================
-
-
-" NERDTree 的快捷键映射
-nmap <F2> :NERDTreeToggle<cr>
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"                           vim 功能延拓
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"
 "==============================================================================
 " vim 自身的配置
 "==============================================================================
 let python_highlight_all=1
+
+" pyenv的vim支持配置
+set wildignore+=versions/*,cache/*
 
 " simple_fold 设置
 let g:SimpylFold_docstring_preview=1
@@ -235,158 +213,45 @@ if exists('+colorcolumn')
 else
    au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
 endif
+
+" NERDTree 的快捷键映射
+nmap <F2> :NERDTreeToggle<cr>
 "==============================================================================
 
-
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"                           语法检错及补全
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"
 "==============================================================================
-" pylint 语法排错插件配置
+" YCM自动补全配置
 "==============================================================================
-" let pylint_version = substitute(pylint_version, '\v^\S+\s+', '', '')
-" syntastic 配置
-" set statusline+=%#warningmsg#
-" set statusline+=%{SyntasticStatuslineFlag()}
-" set statusline+=%*
-
-" let g:syntastic_always_populate_loc_list = 1
-" let g:syntastic_auto_loc_list = 1
-" let g:syntastic_check_on_open = 1
-" let g:syntastic_check_on_wq = 0
-" let g:syntastic_aggregate_errors = 1
-" let g:syntastic_python_checkers = ['python', 'pylint']
-" let g:syntastic_python_pylint_args=""
-" " let g:syntastic_debug = 1
-" let g:syntastic_error_symbol='>>'
-" let g:syntastic_warning_symbol='>'
-" let g:syntastic_enable_highlighting=1
-" let g:syntastic_loc_list_height = 5
-
-" pyenv的vim支持配置
-set wildignore+=versions/*,cache/*
-
-
+set completeopt=longest,menu
+"让Vim的补全菜单行为与一般IDE一致(参考VimTip1228)
+autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+"离开插入模式后自动关闭预览窗口
+inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
+"映射按键,没有这个会导致其他插件的tab不能用
+let g:ycm_key_list_select_completion=['<c-n>', '<Down>']
+let g:ycm_key_list_previous_completion=['<c-p>', '<Up>']
+let g:ycm_confirm_extra_conf=0                      "关闭加载.ycm_extra_conf.py提示
+let g:ycm_collect_identifiers_from_tags_files = 1	" 开启 YCM基于标签引擎
+let g:ycm_min_num_of_chars_for_completion=2	        " 从第2个键入字符就开始罗列匹配项
+let g:ycm_use_ultisnips_completer = 1               " Default 1, just ensure
+let g:ycm_cache_omnifunc=0	                        " 禁止缓存匹配项,每次都重新生成匹配项
+let g:ycm_seed_identifiers_with_syntax=1	        " 语法关键字补全
+let g:ycm_complete_in_comments = 1                  " 在注释输入中也能补全
+let g:ycm_complete_in_strings = 1                   " 在字符串输入中也能补全
+" 注释和字符串中的文字也会被收入补全
+let g:ycm_collect_identifiers_from_comments_and_strings = 0  " 注释和字符串中的文字也会被收入补全
+let g:ycm_server_python_interpreter = '/usr/bin/python3.6'      " YCM 的python解释器位置
+" 补全python的关键字
+" 修改高亮的背景色, 适应主题
+" highlight SyntasticErrorSign guifg=white guibg=black
+" to see error location list
 "==============================================================================
-" GDB 设置
-"==============================================================================
-"Conque GDB
-""待调试文件位于屏幕上方
-let g:ConqueGdb_SrcSplit = 'above'
-"保存历史
-let g:ConqueGdb_SaveHistory = 1
-"修改Conque GDB的Leader键
-let g:ConqueGdb_Leader = '\'
-"总是显示颜色
-let g:ConqueTerm_Color = 2
-"程序结束运行时，关闭Conque GDB窗口
-let g:ConqueTerm_CloseOnEnd = 1
-"Conque Term配置错误时显示警告信息
-let g:ConqueTerm_StartMessages = 0
-"==============================================================================
-
-
-"==============================================================================
-" airline 配置
-"==============================================================================
-scriptencoding utf-8
-let g:airline_extensions = ['tabline']
-"airline主题
-let g:airline_solarized='dark'
-let g:airline_powerline_fonts = 1
-set t_Co=256
-
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#tab_nr_type = 1 " tab number
-let g:airline#extensions#tabline#show_tab_nr = 1
-let g:airline#extensions#tabline#formatter = 'default'
-let g:airline#extensions#tabline#buffer_nr_show = 0
-let g:airline#extensions#tabline#fnametruncate = 16
-let g:airline#extensions#tabline#fnamecollapse = 2
-let g:airline#extensions#tabline#buffer_idx_mode = 1
-let g:airline#extensions#tabline#fnamemod = ':p:t'
-let g:airline#extensions#hunks#enabled = 0
-
-let g:airline_detect_modified=1
-let g:airline_detect_paste=1
-let g:airline_detect_crypt=1
-let g:airline#extensions#tagbar#enabled = 1
-let g:airline#extensions#tagbar#flags = 'f'
-let g:airline#extensions#whitespace#enabled = 0
-let g:airline#extensions#ycm#enabled = 0
-let g:airline#extensions#ctrlp#show_adjacent_modes = 0
-let g:airline_highlighting_cache = 1
-let g:airline#extensions#tabline#show_tab_type = 0
-
-if !exists('g:airline_symbols')
-   let g:airline_symbols = {}
-endif
-let g:airline_left_sep = ''
-let g:airline_left_alt_sep = ''
-let g:airline_right_sep = ''
-let g:airline_right_alt_sep = ''
-let g:airline_symbols.branch = ''
-let g:airline_symbols.readonly = ''
-let g:airline_symbols.linenr = ''
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#enabled = 1
-" show absolute file path in status line
-let g:airline_section_c = '%<%F%m%#__accent_red#%{airline#util#wrap(airline#parts#readonly(),0)}%#__restore__#'
-" show tab number in tab line
-let g:airline#extensions#tabline#tab_nr_type = 1
-let g:airline_symbols.maxlinenr = '☰'
-let g:airline_symbols.linenr = '¶'
-let g:airline_symbols.paste = 'ρ'
-let g:airline_symbols.spell = 'Ꞩ'
-let g:airline_symbols.notexists = '∄'
-let g:airline_symbols.whitespace = 'Ξ'
-let g:airline_symbols.crypt = '🔒'
-
-
-"==============================================================================
-" emmet 配置
-"==============================================================================
-" remap the default <C-Y> leader
-let g:user_emmet_leader_key='<C-A>'
-" let g:user_emmet_mode='n'    "only enable normal mode functions.
-" let g:user_emmet_mode='inv'  "enable all functions, which is equal to
-let g:user_emmet_mode='a'    "enable all function in all mode.
-
-" Enable just for html/css
-" let g:user_emmet_install_global = 0
-" autocmd FileType html,css EmmetInstall
-"==============================================================================
-
-
-"==============================================================================
-" MatchTagAlways 配置
-"==============================================================================
-let g:mta_use_matchparen_group = 1
-let g:mta_filetypes = {
-    \ 'html' : 1,
-    \ 'xhtml' : 1,
-    \ 'xml' : 1,
-    \ 'jinja' : 1,
-    \}
-let g:mta_use_matchparen_group = 1
-let g:mta_set_default_matchtag_color = 1
-"==============================================================================
-
-
-" ZFVimTxtHighlight 配置
-" autocmd FileType html setl syntax=zftxt
-
-
-"==============================================================================
-" gruvbox 配置
-"==============================================================================
-if has('gui_running')
-    set background=light   " Setting dark mode
-else
-    set background=dark    " Setting light mode
-endif
-let g:gruvbox_italic = 1
-let g:gruvbox_termcolors=256
-"==============================================================================
-
-
+"
 "==============================================================================
 " neomake 异步查错
 "==============================================================================
@@ -476,8 +341,8 @@ let g:neomake_info_sign = {'text': 'ℹ', 'texthl': 'NeomakeInfoSign'}
 "     \ ]
 " endfunction
 "==============================================================================
-
-
+"
+"
 "==============================================================================
 "ALE config
 "==============================================================================
@@ -514,3 +379,172 @@ let g:neomake_info_sign = {'text': 'ℹ', 'texthl': 'NeomakeInfoSign'}
 " 自定义图标
 " let g:ale_sign_error = '✗'
 " let g:ale_sign_warning = '⚡'
+"==============================================================================
+"==============================================================================
+
+
+
+
+"==============================================================================
+" pylint 语法排错插件配置
+"==============================================================================
+" let pylint_version = substitute(pylint_version, '\v^\S+\s+', '', '')
+" syntastic 配置
+" set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}
+" set statusline+=%*
+
+" let g:syntastic_always_populate_loc_list = 1
+" let g:syntastic_auto_loc_list = 1
+" let g:syntastic_check_on_open = 1
+" let g:syntastic_check_on_wq = 0
+" let g:syntastic_aggregate_errors = 1
+" let g:syntastic_python_checkers = ['python', 'pylint']
+" let g:syntastic_python_pylint_args=""
+" " let g:syntastic_debug = 1
+" let g:syntastic_error_symbol='>>'
+" let g:syntastic_warning_symbol='>'
+" let g:syntastic_enable_highlighting=1
+" let g:syntastic_loc_list_height = 5
+"
+"==============================================================================
+" GDB 设置
+"==============================================================================
+"Conque GDB
+""待调试文件位于屏幕上方
+let g:ConqueGdb_SrcSplit = 'above'
+"保存历史
+let g:ConqueGdb_SaveHistory = 1
+"修改Conque GDB的Leader键
+let g:ConqueGdb_Leader = '\'
+"总是显示颜色
+let g:ConqueTerm_Color = 2
+"程序结束运行时，关闭Conque GDB窗口
+let g:ConqueTerm_CloseOnEnd = 1
+"Conque Term配置错误时显示警告信息
+let g:ConqueTerm_StartMessages = 0
+"==============================================================================
+"
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"                               主题及美化
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"
+"==============================================================================
+" airline 配置
+"==============================================================================
+scriptencoding utf-8
+let g:airline_extensions = ['tabline']
+"airline主题
+let g:airline_solarized='dark'
+let g:airline_powerline_fonts = 1
+set t_Co=256
+
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#tab_nr_type = 1 " tab number
+let g:airline#extensions#tabline#show_tab_nr = 1
+let g:airline#extensions#tabline#formatter = 'default'
+let g:airline#extensions#tabline#buffer_nr_show = 0
+let g:airline#extensions#tabline#fnametruncate = 16
+let g:airline#extensions#tabline#fnamecollapse = 2
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+let g:airline#extensions#tabline#fnamemod = ':p:t'
+let g:airline#extensions#hunks#enabled = 0
+
+let g:airline_detect_modified=1
+let g:airline_detect_paste=1
+let g:airline_detect_crypt=1
+let g:airline#extensions#tagbar#enabled = 1
+let g:airline#extensions#tagbar#flags = 'f'
+let g:airline#extensions#whitespace#enabled = 0
+let g:airline#extensions#ycm#enabled = 0
+let g:airline#extensions#ctrlp#show_adjacent_modes = 0
+let g:airline_highlighting_cache = 1
+let g:airline#extensions#tabline#show_tab_type = 0
+
+if !exists('g:airline_symbols')
+   let g:airline_symbols = {}
+endif
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = ''
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+" show absolute file path in status line
+let g:airline_section_c = '%<%F%m%#__accent_red#%{airline#util#wrap(airline#parts#readonly(),0)}%#__restore__#'
+" show tab number in tab line
+let g:airline#extensions#tabline#tab_nr_type = 1
+let g:airline_symbols.maxlinenr = '☰'
+let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.paste = 'ρ'
+let g:airline_symbols.spell = 'Ꞩ'
+let g:airline_symbols.notexists = '∄'
+let g:airline_symbols.whitespace = 'Ξ'
+let g:airline_symbols.crypt = '🔒'
+"==============================================================================
+"
+"==============================================================================
+" gruvbox 配置
+"==============================================================================
+if has('gui_running')
+    set background=light   " Setting dark mode
+else
+    set background=dark    " Setting light mode
+endif
+let g:gruvbox_italic = 1
+let g:gruvbox_termcolors=256
+"==============================================================================
+"
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"                       代码效率提升
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"
+"==============================================================================
+" emmet 配置
+"==============================================================================
+" remap the default <C-Y> leader
+let g:user_emmet_leader_key='<C-A>'
+" let g:user_emmet_mode='n'    "only enable normal mode functions.
+" let g:user_emmet_mode='inv'  "enable all functions, which is equal to
+let g:user_emmet_mode='a'    "enable all function in all mode.
+
+" Enable just for html/css
+" let g:user_emmet_install_global = 0
+" autocmd FileType html,css EmmetInstall
+"==============================================================================
+"
+"==============================================================================
+" MatchTagAlways 配置
+"==============================================================================
+let g:mta_use_matchparen_group = 1
+let g:mta_filetypes = {
+    \ 'html' : 1,
+    \ 'xhtml' : 1,
+    \ 'xml' : 1,
+    \ 'jinja' : 1,
+    \}
+let g:mta_use_matchparen_group = 1
+let g:mta_set_default_matchtag_color = 1
+"==============================================================================
+"
+" ZFVimTxtHighlight 配置
+" autocmd FileType html setl syntax=zftxt
+"==============================================================================
+"
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
