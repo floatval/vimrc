@@ -13,8 +13,7 @@ fi
 
 ## curl 安装
 ## 字体安装'
-exits_curl=$(which curl)
-if ($exits_curl)
+if (which curl)
 then
   echo "你的系统已经安装过 curl 将自动进行下一步安装"
 else

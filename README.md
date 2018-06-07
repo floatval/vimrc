@@ -26,3 +26,14 @@ git config --global --unset https.proxy
 
 npm config delete proxy
 ```
+
+## 此脚本适用于 Arch, Centos, Ubuntu ## 其余用户可手动安装
+
+```
+git clone https://github.com/floatval/vimrc
+curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+```
+
+然后在 vim 中执行 ```:PlugInstall```
+enjoy it!
