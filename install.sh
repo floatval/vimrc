@@ -18,8 +18,8 @@ then
   echo "你的系统已经安装过 curl 将自动进行下一步安装"
 else
   echo "你的系统未安装 curl 下面将进行安装： curl"
-  sys=$( lsb_release -a | awk NR==3'{print $2,$3}' )
-  if [ "$sys" = "Arch Linux" ]
+  sys=$( lsb_release -a | awk NR==3'{print $2}' )
+  if [ "$sys" = "Arch" ]
     then
       sudo pacman -S curl
       echo -e "你是否已经安装过 power-line 字体？(y/n)"
@@ -31,7 +31,8 @@ else
           ./install.sh
           rm -rf fonts
       fi
-  elif [ "$sys" = "Ubuntu Linux" ]
+  echo "好啦，需要手动确认的已经全部完成了， 下面脚本会自动进行安装！ enjoy it！"
+  elif [ "$sys" = "Ubuntu" ]
     then
       sudo apt install curl
       echo -e "你是否已经安装过 power-line 字体？(y/n)"
@@ -40,7 +41,8 @@ else
         then
           sudo apt-get install fonts-powerline
       fi
-  elif [ "$sys" = "CentOS Linux" ]
+  echo "好啦，需要手动确认的已经全部完成了， 下面脚本会自动进行安装！ enjoy it！"
+  elif [ "$sys" = "CentOS" ]
     then
        sudo yum install curl
       echo -e "你是否已经安装过 power-line 字体？(y/n)"
@@ -52,6 +54,7 @@ else
           ./install.sh
           rm -rf fonts
       fi
+  echo "好啦，需要手动确认的已经全部完成了， 下面脚本会自动进行安装！ enjoy it！"
   fi
 fi
 
@@ -67,7 +70,6 @@ if [ -e $vimHome ]
 then
   echo "注意，下面的操作将会删除你的 $HOME/.vim 目录，请做好备份"
   echo -e "请问你是否已完成备份？(y/n)"
-  echo "好啦，需要手动确认的已经全部完成了， 下面脚本会自动进行安装！ enjoy it！"
   read answer
   if [ "$answer" = "y" ]
     then
