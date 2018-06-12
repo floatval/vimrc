@@ -37,12 +37,7 @@ Plug 'mattn/emmet-vim'
 Plug 'othree/html5.vim'
 " 高亮 html,xml 标签
 Plug 'Valloric/MatchTagAlways'
-" HTML 语法高亮
-" Plug 'ZSaberLv0/ZFVimTxtHighlight'
 " 异步检错
-" Plug 'neomake/neomake'
-"lint neomake
-" Plug 'dojoteef/neomake-autolint'
 " 自动缩进
 Plug 'vim-scripts/indentpython.vim'
 " 彩虹括号
@@ -64,6 +59,12 @@ Plug 'bitc/vim-bad-whitespace'
 Plug 'tpope/vim-fugitive'
 " 打字机声音
 " Plug 'skywind3000/vim-keysound'
+" REPL
+Plug 'sillybun/vim-repl/'
+" asyncrun
+Plug 'skywind3000/asyncrun.vim'
+" python 变量类型自动标识
+" Plug 'sillybun/vim-autodoc'
 
 " HTML
 " 括号智能补全
@@ -91,7 +92,7 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'majutsushi/tagbar'
 Plug 'universal-ctags/ctags'
 Plug 'SirVer/ultisnips'
-Plug 'nsf/gocode', { 'rtp': 'vim', 'do': '~/.vim/plugged/gocode/vim/symlink.sh' }
+" Plug 'nsf/gocode', { 'rtp': 'vim', 'do': '~/.vim/plugged/gocode/vim/symlink.sh' }
 call plug#end()            " 必须
 filetype plugin indent on    " 必须 加载vim自带和插件相应的语法和文件类型相关脚本
 " 忽视插件改变缩进,可以使用以下替代:
@@ -109,9 +110,9 @@ filetype plugin indent on    " 必须 加载vim自带和插件相应的语法和
 "==============================================================================
 " vim 自身的配置
 "==============================================================================
+set relativenumber  " 开启相对行号,需7.4以上版本
 let python_highlight_all=1
 set nocompatible              " 去除VI一致性,必须
-" filetype off                  " 必须
 filetype plugin on
 
 " set omnifunc=syntaxcomplete#Complete
@@ -199,8 +200,25 @@ set cursorline
 autocmd BufWritePost $VIMRC source $VIMRC
 
 " <C-l> 运行python程序
-map <C-l> :w<cr>:!python %<cr>
+nnoremap <C-l> :call CompileRunGcc()<cr>
 
+func! CompileRunGcc()
+          exec "w"
+          if &filetype == 'python'
+                  if search("@profile")
+                          exec "AsyncRun kernprof -l -v %"
+                          exec "copen"
+                          exec "wincmd p"
+                  elseif search("set_trace()")
+                          exec "!python3 %"
+                  else
+                          exec "AsyncRun -raw python3 %"
+                          exec "copen"
+                          exec "wincmd p"
+                  endif
+          endif
+
+endfunc
 "vim tab键默认4空格
 set ts=4
 set expandtab
@@ -221,8 +239,9 @@ set noshowmode
 " vim 自动更改目录为当前文件所在目录
 set autochdir
 
-"代码变得更漂亮
-set t_Co=256
+" 配色方案选择
+set termguicolors   " 开启24位真色（同32位真色)
+" set t_Co=256   # 因7.4以后支持24位真色，且终端支持真色故不用该选项
 " colors zenburn
 " colors jellybeans
 colors gruvbox
@@ -274,7 +293,7 @@ function! AutoSetFileHead()
 
     "如果文件类型为python
     if &filetype == 'python'
-         call setline(1, "\#!/usr/bin/env python3")
+         call setline(1, "\#! /usr/bin/env python3")
          call setline(2, "\# encoding: utf-8")
         " call setline(1, "\# -*- coding: utf-8 -*-")
     endif
@@ -342,7 +361,7 @@ let g:ycm_semantic_triggers =  {
   \   'erlang' : [':'],
   \   'python' : ['.'],
   \ }
-let g:ycm_cache_omnifunc = 1
+" let g:ycm_cache_omnifunc = 1
 " let g:ycm_semantic_triggers =  {
 " 			\ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
 " 			\ 'cs,lua,javascript': ['re!\w{2}'],
@@ -357,6 +376,7 @@ let g:ycm_filetype_whitelist = {
 			\ "zimbu":1,
             \ "go":1,
             \ "python":1,
+            \ "py":1,
 			\ }
 " 补全python的关键字
 " 修改高亮的背景色, 适应主题
@@ -471,21 +491,21 @@ let g:ale_lint_on_filetype_changed = 1
 let g:ale_lint_on_save = 1
 let g:ale_fix_on_save = 1
 let g:ale_set_loclist = 0
-let g:ale_set_quickfix = 1
+let g:ale_set_quickfix = 0
 let g:ale_open_list = 1
 
-let g:ale_linters = {
-\   'javascript.jsx': ['eslint', 'flow'],
-\   'python': ['pylint'],
-\   'go': ['golint', 'govet', 'errcheck'],
-\}
+" let g:ale_linters = {
+" \   'javascript.jsx': ['eslint', 'flow'],
+" \   'python': ['pylint'],
+" \   'go': ['golint', 'govet', 'errcheck'],
+" \}
 let g:ale_fixers = {
 \   'javascript.jsx': ['eslint', 'prettier'],
 \   'python': ['autopep8'],
 \}
 
-nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-nmap <silent> <C-j> <Plug>(ale_next_wrap)
+" nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+" nmap <silent> <C-j> <Plug>(ale_next_wrap)
 let g:ale_python_pylint_use_global = 1
 let g:ale_list_window_size = 0
 " 自定义图标
@@ -731,3 +751,8 @@ let g:tagbar_type_go = {
 	\ 'ctagsargs' : '-sort -silent'
     \ }
 
+"==============================================================================
+"REPL 配置
+"==============================================================================
+let g:sendtorepl_invoke_key = "<leader>w"    "传送代码快捷键，默认为<leader>w
+let g:repl_position = 3                      "0表示出现在下方，1表示出现在上方，2在左边，3在右边
