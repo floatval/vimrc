@@ -89,3 +89,14 @@ fi
 
 # 插件安装:
 vim -c :PlugInstall
+
+echo "插件安装完成，下面进行ycm的编译。"
+
+# 编译 ycm 对 go 的支持
+
+echo -e "请问您是否需要编译 ycm 对 go 语言的支持?"
+read answer
+if [ "$answer" == "y"]
+  then
+    cd $vimHome/plugged/YouCompleteMe
+    ./install.py --go-completer
