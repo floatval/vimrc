@@ -45,4 +45,4 @@ git config --global --unset https.proxy
 npm config delete proxy
 ```
 
-** 此脚本适用于 Arch, Centos, Ubuntu  其余用户可手动安装 **
+**此脚本适用于 Arch, Centos, Ubuntu  其余用户可手动安装**
